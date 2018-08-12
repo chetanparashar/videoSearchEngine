@@ -192,7 +192,7 @@ function ajaxRequest(q,pageToken) {
     var search=false;
     if(responseData.length == 0 || responseData=='null'|| responseData===''){  
        responseData=[];    
-       callServer(q,pageToken);
+       callServer(q,pageToken, false);
     }else{     
         
          $.each(responseData, function (key, tubeVal) {
@@ -213,26 +213,34 @@ function ajaxRequest(q,pageToken) {
                }
          });
          if(!search){
-             callServer(q,pageToken);
+             callServer(q,pageToken, false);
          }
     }    
 }
 
+   
 
-function callServer(q,pageToken){
+
+function callServer(q,pageToken,loadmore){
      var obj = [];
+     var mypagetoken=localStorage.getItem('pageToken');
      $.ajax({
         method: 'GET',
         url: "https://www.googleapis.com/youtube/v3/search",
-        data: {part: 'snippet', q: q, type: 'video', maxResults: 2, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',nextPageToken:pageToken},
+        data: {part: 'snippet', q: q, type: 'video', maxResults: 2, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',pageToken:pageToken},
         dataType: 'jsonp',
-        success: function (result) {       
+        success: function (result) { 
+            if(mypagetoken!=result.nextPageToken){
+             localStorage.setItem('pageToken',result.nextPageToken); 
+             var appendHtml="";
              $.each(result.items, function (key, val) {
-                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url,pagetoken:result.nextPageToken})
-            });            
-            responseData.push({search_term: q,created_at: new Date().getTime(), result: obj});
-            localStorage.setItem('tubedata', JSON.stringify(responseData));            
-             $.ajax({
+                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url,pagetoken:result.nextPageToken});
+                  appendHtml+="<div class='col-md-1'></div><div class='col-md-3'>";
+                  appendHtml+="<img src='"+val.snippet.thumbnails.medium.url+"' width='320' height='180'>";
+                  appendHtml+="<a href='http://www.youtube.com/watch?v='"+val.id.videoId+"' target='_blank'>   Watch This Video</a> </div>";
+                  appendHtml+="<div class='col-md-8'><h5>"+val.snippet.title+" </h5><h5></h5></div>";
+            });                   
+            $.ajax({
                   method: 'POST',
                   url:'dbObject.php',
                   data:{result: obj,search_term: q,pagetoken:result.nextPageToken},
@@ -243,8 +251,27 @@ function callServer(q,pageToken){
                        console.log("failed");
                   },
              });
+             if(loadmore){
+                responseData = JSON.parse(localStorage.getItem('tubedata'));
+                $.each(responseData,function(key,val){
+                    if(val.search_term == q ){
+                         val.result=$.merge(val.result,obj);                        
+                    }
+                });
+                $('#results').append(appendHtml);
+                busy=localStorage.setItem('busy',false);
+            }
+            else if(!loadmore){
+                console.log('load more false');
+                responseData.push({search_term: q,created_at: new Date().getTime(), result: obj});
+                
+            }
+           
+            localStorage.setItem('tubedata', JSON.stringify(responseData)); 
             if(window.location.pathname=="/videoSearchEngine/index.php"){
                 $.redirect('videoList.php',{data:obj,searchTerm: q});
             }
+          }
         }});
 }
+

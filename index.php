@@ -18,13 +18,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
 <script>
-    
+   
     $("#search").click(function(){
+	 var page_token='';
 	if($('#q').val()==''){
 	    alert('Please enter some text in search box');
-	}else{
-	    var pageToken='';
-	    ajaxRequest($('#q').val(),pageToken);
+	}else{	   
+	    ajaxRequest($('#q').val(),page_token);
         }
 	
 	

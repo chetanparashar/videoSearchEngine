@@ -12,12 +12,13 @@ echo " <div class='row'>
 echo "<br><br>";
 echo "<div id='results'>";
 $pageToken='';
+$flag=1;
 
 foreach ($_REQUEST['data'] as $searchResult) {
-    $pageToken=$searchResult['nextPageToken'];
+//    if($flag<=12){
     ?>
 <div>
-    <div class="row">
+    
 	<div class="col-md-1">
 	    
 	</div>
@@ -27,13 +28,17 @@ foreach ($_REQUEST['data'] as $searchResult) {
 	</div>
 	<div class="col-md-8">
 	    <h5><?= $searchResult['title']?> <h5>
-	<div>
-    </div>
+	</div>
+    
 </div>
 <br>
     
     
-<?php }
+<?php
+//       }
+    $flag++;
+    
+    }
 echo "</div>";
 
 ?>
@@ -43,22 +48,28 @@ echo "</div>";
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
 <script>
+     var page_token='';
     $(document).ready(function () {
 	 var busy = false;
-	 var page_token='';
-	 var data=[];
-	 var searchTerm='<?= $searchTerm ?>';
+	 
+	 var searchTerm='<?= $searchTerm ?>';	 
+//	    busy=false;
 	 $('#back').click(function (){	    
 	    $.redirect('index.php');
 	 });
-        $(window).scroll(function () {
-            // make sure u give the container id of the data to be loaded in.
-            if ($(window).scrollTop() + $(window).height() > $("#results").height()&& !busy) {
-		 busy = true;
-                 ajaxRequest(searchTerm,page_token);
-
+	
+	 $(window).on("scroll", function() {
+	      busy=localStorage.getItem('busy');
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+		 busy=localStorage.getItem('busy');
+		 page_token=localStorage.getItem('pageToken');
+                 loadMore(searchTerm,page_token);
+		 
             }
         });
+	function loadMore(searchTerm,page_token){ 	    
+	    page_token=callServer(searchTerm,page_token, true);	   
+	};
        
     });
 </script>
