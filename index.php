@@ -19,18 +19,11 @@
 </form>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
-<script src="redirect.js"></script>
 <script>
     
     $("#search").click(function(){
-	var response=ajaxRequest($('#q').val());
-	alert(response);
-	$.redirect('videoList.php', {'arg1': 'value1', 'arg2': 'value2'});
+	var pageToken='';
+	ajaxRequest($('#q').val(),pageToken);
+	
     });
  </script>
-
- 
-<!-- var data = [
-	{key: searchkey, result: JSON.stringify(), creatred_at: time_stamp, pageToken:'' },
- ]
- -->
