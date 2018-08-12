@@ -42,34 +42,27 @@ foreach ($_REQUEST['data'] as $searchResult) {
 echo "</div>";
 
 ?>
-<div id="loader_image" style="display: none;"><img src="loader.gif" alt="" width="24" height="24"> Loading...please wait</div>
-<div id="loader_message" style="display: block;"><button class="btn btn-default" type="button">Loading please wait...</button></div>
-<div id="loader_message" style="display: block;"><button class="btn btn-default" type="button">No more records.</button></div>
+
+<div id="loader_message" style="display: block;"><button class="btn btn-default" type="button">click for more data...</button>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
 <script>
      var page_token='';
     $(document).ready(function () {
-	 var busy = false;
+	 var height = 0;
 	 
 	 var searchTerm='<?= $searchTerm ?>';	 
 //	    busy=false;
 	 $('#back').click(function (){	    
 	    $.redirect('index.php');
 	 });
-	
 	 $(window).on("scroll", function() {
-	      busy=localStorage.getItem('busy');
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-		 busy=localStorage.getItem('busy');
+	     height=window.innerHeight + window.scrollY;
+	     if (height>= document.body.offsetHeight) {
 		 page_token=localStorage.getItem('pageToken');
-                 loadMore(searchTerm,page_token);
-		 
-            }
-        });
-	function loadMore(searchTerm,page_token){ 	    
-	    page_token=callServer(searchTerm,page_token, true);	   
-	};
-       
+		 callServer(searchTerm,page_token, true);
+	    }
+	 });
+         
     });
 </script>

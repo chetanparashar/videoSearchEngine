@@ -221,16 +221,15 @@ function ajaxRequest(q,pageToken) {
    
 
 
-function callServer(q,pageToken,loadmore){
-     var obj = [];
-     var mypagetoken=localStorage.getItem('pageToken');
+function callServer(q,pageToken,loadmore){   
+     var obj = [];     
      $.ajax({
         method: 'GET',
         url: "https://www.googleapis.com/youtube/v3/search",
-        data: {part: 'snippet', q: q, type: 'video', maxResults: 2, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',pageToken:pageToken},
+        data: {part: 'snippet', q: q, type: 'video', maxResults:12, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',pageToken:pageToken},
         dataType: 'jsonp',
         success: function (result) { 
-            if(mypagetoken!=result.nextPageToken){
+             localStorage.removeItem('pageToken'); 
              localStorage.setItem('pageToken',result.nextPageToken); 
              var appendHtml="";
              $.each(result.items, function (key, val) {
@@ -268,10 +267,11 @@ function callServer(q,pageToken,loadmore){
             }
            
             localStorage.setItem('tubedata', JSON.stringify(responseData)); 
-            if(window.location.pathname=="/videoSearchEngine/index.php"){
+           
+         
+           if(window.location.pathname=="/videoSearchEngine/index.php"){
                 $.redirect('videoList.php',{data:obj,searchTerm: q});
             }
-          }
         }});
 }
 
