@@ -186,6 +186,7 @@ function ajaxRequest(q,pageToken) {
     if(q==''){
         return false;
     }
+    
     responseData = JSON.parse(localStorage.getItem('tubedata'));
     var search=false;
     if(responseData.length == 0 || responseData=='null'|| responseData===''){  
@@ -226,10 +227,18 @@ function callServer(q,pageToken){
         dataType: 'jsonp',
         success: function (result) {       
              $.each(result.items, function (key, val) {
-                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url})
+                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url,pagetoken:result.nextPageToken})
             });            
-            responseData.push({search_term: q,pagetoken:result.nextPageToken,created_at: new Date().getTime(), result: obj});
-            localStorage.setItem('tubedata', JSON.stringify(responseData));            
+            responseData.push({search_term: q,created_at: new Date().getTime(), result: obj});
+            localStorage.setItem('tubedata', JSON.stringify(responseData));  
+             $.ajax({
+                  method: 'POST',
+                  url:'dbObject.php',
+                  data:{result: obj,search_term: q},
+                  success: function (result) { 
+                      console.log("success");
+                  }   
+             });
             if(window.location.pathname=="/video/index.php"){
                 $.redirect('videoList.php',{data:obj,searchTerm: q});
             }

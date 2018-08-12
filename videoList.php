@@ -44,7 +44,10 @@ echo "</div>";
 <script src="ajax.js"></script>
 <script>
     $(document).ready(function () {
-	 busy = false;
+	 var busy = false;
+	 var page_token='';
+	 var data=[];
+	 var searchTerm='<?= $searchTerm ?>';
 	 $('#back').click(function (){	    
 	    $.redirect('index.php');
 	 });
@@ -52,7 +55,7 @@ echo "</div>";
             // make sure u give the container id of the data to be loaded in.
             if ($(window).scrollTop() + $(window).height() > $("#results").height()&& !busy) {
 		 busy = true;
-//                ajaxRequest(searchTerm,pageToken);
+                 ajaxRequest(searchTerm,page_token);
 
             }
         });
