@@ -183,23 +183,29 @@ ShareAlike - If you remix, transform, or build upon the material, you must distr
 
 var responseData=[];
 function ajaxRequest(q,pageToken) {
+    if(q==''){
+        return false;
+    }
     responseData = JSON.parse(localStorage.getItem('tubedata'));
     var search=false;
-    if(responseData.length == 0){       
-        callServer(q,pageToken);
-    }else{        
+    if(responseData.length == 0 || responseData=='null'|| responseData===''){  
+       responseData=[];    
+       callServer(q,pageToken);
+    }else{     
+        
          $.each(responseData, function (key, tubeVal) {
-             console.log(tubeVal);
-               if(tubeVal.search_term === q){
+               if(tubeVal.search_term == q ){
                    var newdate = new Date().getTime();
                    var olddate = tubeVal.created_at;
                    var diff = newdate - olddate;
                    var  timevalue = (diff / (1000*60*60));
                    if(timevalue>1){
-                       console.log('++');
                        responseData.splice(key,1);
-                   }else{
+                   }else{                      
                        search=true;
+                       if(window.location.pathname=="/video/index.php"){
+                         $.redirect('videoList.php',{data:tubeVal.result,searchTerm: q});
+                       }
                    }     
                   
                }
@@ -207,10 +213,7 @@ function ajaxRequest(q,pageToken) {
          if(!search){
              callServer(q,pageToken);
          }
-    }
-    if(window.location.pathname=="/video/index.php"){
-           $.redirect('videoList.php',{data:obj,searchTerm: q});
-    }
+    }    
 }
 
 
@@ -223,10 +226,12 @@ function callServer(q,pageToken){
         dataType: 'jsonp',
         success: function (result) {       
              $.each(result.items, function (key, val) {
-                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url, pagetoken:result.nextPageToken})
+                  obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url})
             });            
-            responseData.push({search_term: q, created_at: new Date().getTime(), result: obj});
+            responseData.push({search_term: q,pagetoken:result.nextPageToken,created_at: new Date().getTime(), result: obj});
             localStorage.setItem('tubedata', JSON.stringify(responseData));            
-            
+            if(window.location.pathname=="/video/index.php"){
+                $.redirect('videoList.php',{data:obj,searchTerm: q});
+            }
         }});
 }

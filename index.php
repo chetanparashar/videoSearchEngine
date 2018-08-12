@@ -22,8 +22,13 @@
 <script>
     
     $("#search").click(function(){
-	var pageToken='';
-	ajaxRequest($('#q').val(),pageToken);
+	if($('#q').val()==''){
+	    alert('Please enter some text in search box');
+	}else{
+	    var pageToken='';
+	    ajaxRequest($('#q').val(),pageToken);
+        }
+	
 	
     });
  </script>

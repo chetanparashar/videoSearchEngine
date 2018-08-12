@@ -1,8 +1,20 @@
 <?php
-$data = $_REQUEST;
-echo "Search Term   :    ".$data['searchTerm'];
+$searchTerm=$_REQUEST['searchTerm'];
+echo "Search Term   :    ".$searchTerm;
+echo "<br>";
+
+//echo  $_REQUEST['pagetoken'];
+echo " <div class='row'>
+	<div class='col-md-12'>
+	    <input name='submit'  id='back' value='back to pervious page' type='button'>        
+	</div>
+    </div>";
 echo "<br><br>";
-foreach ($data['data'] as $searchResult) {
+echo "<div id='results'>";
+$pageToken='';
+
+foreach ($_REQUEST['data'] as $searchResult) {
+    $pageToken=$searchResult['nextPageToken'];
     ?>
 <div>
     <div class="row">
@@ -11,7 +23,7 @@ foreach ($data['data'] as $searchResult) {
 	</div>
 	<div class="col-md-3">
 	    <img src="<?= $searchResult['thumbnails']?>" height="180" width="320">	
-	    <a href=http://www.youtube.com/watch?v=".$searchResult['id']['videoId']." target=_blank>   Watch This Video</a>    
+	    <a href=<?php echo "http://www.youtube.com/watch?v=".$searchResult['videoId']?> target=_blank>   Watch This Video</a>    
 	</div>
 	<div class="col-md-8">
 	    <h5><?= $searchResult['title']?> <h5>
@@ -22,48 +34,28 @@ foreach ($data['data'] as $searchResult) {
     
     
 <?php }
+echo "</div>";
 
-echo $videos;
 ?>
+<div id="loader_image" style="display: none;"><img src="loader.gif" alt="" width="24" height="24"> Loading...please wait</div>
+<div id="loader_message" style="display: block;"><button class="btn btn-default" type="button">Loading please wait...</button></div>
+<div id="loader_message" style="display: block;"><button class="btn btn-default" type="button">No more records.</button></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
 <script>
     $(document).ready(function () {
-        function displayRecords(lim, off) {
-            $.ajax({
-                type: "GET",
-                async: false,
-                url: "getrecords.php",
-                data: "limit=" + lim + "&offset=" + off,
-                cache: false,
-                beforeSend: function () {
-                    $("#loader_message").html("").hide();
-                    $('#loader_image').show();
-                },
-                success: function (html) {
-                    $("#results").append(html);
-                    $('#loader_image').hide();
-                    if (html == "") {
-                        $("#loader_message").html('<button data-atr="nodata" class="btn btn-default" type="button">No more records.</button>').show()
-                    } else {
-                        $("#loader_message").html('<button class="btn btn-default" type="button">Loading please wait...</button>').show();
-                    }
-                    window.busy = false;
-
-                }
-            });
-        }
-
+	 busy = false;
+	 $('#back').click(function (){	    
+	    $.redirect('index.php');
+	 });
         $(window).scroll(function () {
             // make sure u give the container id of the data to be loaded in.
-            if ($(window).scrollTop() + $(window).height() > $("#results").height() && !busy) {
-                busy = true;
-                offset = limit + offset;
-
-                displayRecords(limit, offset);
+            if ($(window).scrollTop() + $(window).height() > $("#results").height()&& !busy) {
+		 busy = true;
+//                ajaxRequest(searchTerm,pageToken);
 
             }
         });
-
+       
     });
 </script>
