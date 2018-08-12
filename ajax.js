@@ -186,8 +186,9 @@ function ajaxRequest(q,pageToken) {
     if(q==''){
         return false;
     }
-    
-    responseData = JSON.parse(localStorage.getItem('tubedata'));
+    if(localStorage.getItem('tubedata')){
+         responseData = JSON.parse(localStorage.getItem('tubedata'));
+    }
     var search=false;
     if(responseData.length == 0 || responseData=='null'|| responseData===''){  
        responseData=[];    
@@ -202,9 +203,9 @@ function ajaxRequest(q,pageToken) {
                    var  timevalue = (diff / (1000*60*60));
                    if(timevalue>1){
                        responseData.splice(key,1);
-                   }else{                      
+                   }else{                    
                        search=true;
-                       if(window.location.pathname=="/video/index.php"){
+                       if(window.location.pathname=="/videoSearchEngine/index.php"){
                          $.redirect('videoList.php',{data:tubeVal.result,searchTerm: q});
                        }
                    }     
@@ -230,16 +231,19 @@ function callServer(q,pageToken){
                   obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url,pagetoken:result.nextPageToken})
             });            
             responseData.push({search_term: q,created_at: new Date().getTime(), result: obj});
-            localStorage.setItem('tubedata', JSON.stringify(responseData));  
+            localStorage.setItem('tubedata', JSON.stringify(responseData));            
              $.ajax({
                   method: 'POST',
                   url:'dbObject.php',
-                  data:{result: obj,search_term: q},
+                  data:{result: obj,search_term: q,pagetoken:result.nextPageToken},
                   success: function (result) { 
                       console.log("success");
-                  }   
+                  },
+                  error:function(result){
+                       console.log("failed");
+                  },
              });
-            if(window.location.pathname=="/video/index.php"){
+            if(window.location.pathname=="/videoSearchEngine/index.php"){
                 $.redirect('videoList.php',{data:obj,searchTerm: q});
             }
         }});
