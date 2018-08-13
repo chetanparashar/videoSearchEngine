@@ -1,7 +1,6 @@
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "root";
+
+    include('dbCredentials.php');
     $db = "videos";
     $conn = mysqli_connect($servername, $username, $password,$db);
     if (!$conn) {
