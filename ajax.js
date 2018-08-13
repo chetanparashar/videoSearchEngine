@@ -236,7 +236,7 @@ function callServer(q,pageToken,loadmore){
                   obj.push({videoId:val.id.videoId, title:val.snippet.title, thumbnails:val.snippet.thumbnails.medium.url,pagetoken:result.nextPageToken});
                   appendHtml+="<div class='col-md-1'></div><div class='col-md-3'>";
                   appendHtml+="<img src='"+val.snippet.thumbnails.medium.url+"' width='320' height='180'>";
-                  appendHtml+="<a href='http://www.youtube.com/watch?v='"+val.id.videoId+"' target='_blank'>   Watch This Video</a> </div>";
+                  appendHtml+="<a href='http://www.youtube.com/watch?v="+val.id.videoId+"' target='_blank'>   Watch This Video</a> </div>";
                   appendHtml+="<div class='col-md-8'><h5>"+val.snippet.title+" </h5><h5></h5></div>";
             });                   
             $.ajax({

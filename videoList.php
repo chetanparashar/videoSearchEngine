@@ -15,7 +15,7 @@ $pageToken='';
 $flag=1;
 
 foreach ($_REQUEST['data'] as $searchResult) {
-//    if($flag<=12){
+    if($flag<=12){
     ?>
 <div>
     
@@ -35,7 +35,7 @@ foreach ($_REQUEST['data'] as $searchResult) {
     
     
 <?php
-//       }
+       }
     $flag++;
     
     }
