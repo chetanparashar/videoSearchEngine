@@ -226,7 +226,7 @@ function callServer(q,pageToken,loadmore){
      $.ajax({
         method: 'GET',
         url: "https://www.googleapis.com/youtube/v3/search",
-        data: {part: 'snippet', q: q, type: 'video', maxResults:4, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',pageToken:pageToken},
+        data: {part: 'snippet', q: q, type: 'video', maxResults:12, key: 'AIzaSyBAEQj2O24zCS_JeS2cdjkk2FUasNcaGgM',pageToken:pageToken},
         dataType: 'jsonp',
         success: function (result) { 
              localStorage.removeItem('pageToken'); 
