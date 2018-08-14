@@ -44,18 +44,17 @@ echo "</div>";
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ajax.js"></script>
 <script>
-     var page_token='';
+   
     $(document).ready(function () {
 	 var height = 0;
-	 
 	 var searchTerm='<?= $searchTerm ?>';	 
-//	    busy=false;
+	
 	 $('#back').click(function (){	    
 	    $.redirect('index.php');
 	 });
 	 $(window).on("scroll", function() {
 	     height=window.innerHeight + window.scrollY;
-	     if (height>= document.body.offsetHeight) {
+	     if (height>= document.body.offsetHeight && !busy) {
 		 page_token=localStorage.getItem('pageToken');
 		 callServer(searchTerm,page_token, true);
 	    }

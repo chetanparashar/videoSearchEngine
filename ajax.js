@@ -182,6 +182,7 @@ ShareAlike - If you remix, transform, or build upon the material, you must distr
 
 
 var responseData=[];
+var  busy=false;
 function ajaxRequest(q,pageToken) {
     if(q==''){
         return false;
@@ -222,6 +223,7 @@ function ajaxRequest(q,pageToken) {
 
 
 function callServer(q,pageToken,loadmore){   
+     busy=true;
      var obj = [];     
      $.ajax({
         method: 'GET',
@@ -265,13 +267,11 @@ function callServer(q,pageToken,loadmore){
                 responseData.push({search_term: q,created_at: new Date().getTime(), result: obj});
                 
             }
-           
             localStorage.setItem('tubedata', JSON.stringify(responseData)); 
-           
-         
            if(window.location.pathname=="/videoSearchEngine/index.php"){
                 $.redirect('videoList.php',{data:obj,searchTerm: q});
             }
+            busy=false;
         }});
 }
 
